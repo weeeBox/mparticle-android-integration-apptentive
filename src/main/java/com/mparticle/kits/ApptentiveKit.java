@@ -205,8 +205,10 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 
 				if (apptentiveCommerceData != null) {
 					Map<String, String> customData = event.getCustomAttributes();
-					Apptentive.engage(getContext(), String.format("eCommerce - %s", event.getProductAction()),
-							Collections.<String, Object>unmodifiableMap(customData), apptentiveCommerceData);
+					Apptentive.engage(getContext(),
+							String.format("eCommerce - %s", event.getProductAction()),
+							customData == null ? null : Collections.<String, Object>unmodifiableMap(customData),
+							apptentiveCommerceData);
 					List<ReportingMessage> messages = new LinkedList<ReportingMessage>();
 					messages.add(ReportingMessage.fromEvent(this, event));
 					return messages;
