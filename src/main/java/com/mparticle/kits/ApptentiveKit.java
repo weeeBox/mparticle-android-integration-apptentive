@@ -94,6 +94,38 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 	}
 
 	@Override
+	public void setUserAttributeList(String key, List<String> list) {
+
+	}
+
+	@Override
+	public boolean supportsAttributeLists() {
+		return false;
+	}
+
+	@Override
+	public void setAllUserAttributes(Map<String, String> attributes, Map<String, List<String>> attributeLists) {
+		String firstName = "";
+		String lastName = "";
+		for (Map.Entry<String, String> entry : attributes.entrySet()){
+			if (entry.getKey().equalsIgnoreCase(MParticle.UserAttributes.FIRSTNAME)) {
+				firstName = entry.getValue();
+			} else if (entry.getKey().equalsIgnoreCase(MParticle.UserAttributes.LASTNAME)) {
+				lastName = entry.getValue();
+			} else {
+				Apptentive.addCustomPersonData(entry.getKey(), entry.getValue());
+			}
+		}
+		String fullName;
+		if (!TextUtils.isEmpty(firstName) && !TextUtils.isEmpty(lastName)) {
+			fullName = firstName + " " + lastName;
+		} else {
+			fullName = firstName + lastName;
+		}
+		Apptentive.setPersonName(fullName.trim());
+	}
+
+	@Override
 	public void removeUserAttribute(String key) {
 		Apptentive.removeCustomPersonData(key);
 	}
