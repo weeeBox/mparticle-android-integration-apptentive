@@ -1,9 +1,7 @@
 package com.mparticle.kits;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
-import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -16,18 +14,12 @@ import com.mparticle.MParticle;
 import com.mparticle.commerce.CommerceEvent;
 import com.mparticle.commerce.Product;
 import com.mparticle.commerce.TransactionAttributes;
-import com.mparticle.internal.CommerceEventUtil;
-import com.mparticle.internal.ConfigManager;
 
-
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +56,7 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 		if (identityType.equals(MParticle.IdentityType.Email)) {
 			Apptentive.setPersonEmail(id);
 		} else if (identityType.equals(MParticle.IdentityType.CustomerId)) {
-			if (TextUtils.isEmpty(Apptentive.getPersonName())) {
+			if (KitUtils.isEmpty(Apptentive.getPersonName())) {
 				// Use id as customer name iff no full name is set yet.
 				Apptentive.setPersonName(id);
 			}
@@ -85,7 +77,7 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 		}
 
 		String fullName;
-		if (!TextUtils.isEmpty(firstName) && !TextUtils.isEmpty(lastName)) {
+		if (!KitUtils.isEmpty(firstName) && !KitUtils.isEmpty(lastName)) {
 			fullName = firstName + " " + lastName;
 		} else {
 			fullName = firstName + lastName;
@@ -117,7 +109,7 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 			}
 		}
 		String fullName;
-		if (!TextUtils.isEmpty(firstName) && !TextUtils.isEmpty(lastName)) {
+		if (!KitUtils.isEmpty(firstName) && !KitUtils.isEmpty(lastName)) {
 			fullName = firstName + " " + lastName;
 		} else {
 			fullName = firstName + lastName;
@@ -181,10 +173,10 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 
 	@Override
 	public List<ReportingMessage> logEvent(CommerceEvent event) {
-		if (!TextUtils.isEmpty(event.getProductAction())) {
+		if (!KitUtils.isEmpty(event.getProductAction())) {
 			try {
 				Map<String, String> eventActionAttributes = new HashMap<String, String>();
-				CommerceEventUtil.extractActionAttributes(event, eventActionAttributes);
+				CommerceEventUtils.extractActionAttributes(event, eventActionAttributes);
 
 				CommerceExtendedData apptentiveCommerceData = null;
 
@@ -193,7 +185,7 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 					apptentiveCommerceData = new CommerceExtendedData();
 
 					String transaction_id = transactionAttributes.getId();
-					if (!TextUtils.isEmpty(transaction_id)) {
+					if (!KitUtils.isEmpty(transaction_id)) {
 						apptentiveCommerceData.setId(transaction_id);
 					}
 					Double transRevenue = transactionAttributes.getRevenue();
@@ -209,12 +201,12 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 						apptentiveCommerceData.setTax(transTax);
 					}
 					String transAffiliation = transactionAttributes.getAffiliation();
-					if (!TextUtils.isEmpty(transAffiliation)) {
+					if (!KitUtils.isEmpty(transAffiliation)) {
 						apptentiveCommerceData.setAffiliation(transAffiliation);
 					}
-					String transCurrency = eventActionAttributes.get(Constants.Commerce.ATT_ACTION_CURRENCY_CODE);
-					if (TextUtils.isEmpty(transCurrency)) {
-						transCurrency = Constants.Commerce.DEFAULT_CURRENCY_CODE;
+					String transCurrency = eventActionAttributes.get(CommerceEventUtils.Constants.ATT_ACTION_CURRENCY_CODE);
+					if (KitUtils.isEmpty(transCurrency)) {
+						transCurrency = CommerceEventUtils.Constants.DEFAULT_CURRENCY_CODE;
 					}
 					apptentiveCommerceData.setCurrency(transCurrency);
 
