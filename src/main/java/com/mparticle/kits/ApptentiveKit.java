@@ -35,6 +35,10 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 
 	@Override
 	protected List<ReportingMessage> onKitCreate(Map<String, String> settings, Context context) {
+		String apiKey = settings.get(API_KEY);
+		if (KitUtils.isEmpty(apiKey)) {
+			throw new IllegalArgumentException("Apptentive app key is required.");
+		}
 		if (callbacks == null) {
 			callbacks = new ApptentiveActivityLifecycleCallbacks();
 		}
@@ -42,7 +46,7 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 		 * register ApptentiveActivityLifecycleCallbacks through Apptentive. But do need to initialize Apptentive
          *
          */
-		ApptentiveInternal.createInstance(context.getApplicationContext(), settings.get(API_KEY));
+		ApptentiveInternal.createInstance(context.getApplicationContext(), apiKey);
 		return null;
 	}
 
