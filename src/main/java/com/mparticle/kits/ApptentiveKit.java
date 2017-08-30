@@ -4,8 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.apptentive.android.sdk.Apptentive;
-import com.apptentive.android.sdk.ApptentiveInternal;
-import com.apptentive.android.sdk.lifecycle.ApptentiveActivityLifecycleCallbacks;
 import com.apptentive.android.sdk.model.CommerceExtendedData;
 import com.mparticle.MPEvent;
 import com.mparticle.MParticle;
@@ -23,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ApptentiveKit extends KitIntegration implements KitIntegration.EventListener, KitIntegration.CommerceListener, KitIntegration.AttributeListener {
-	private static final String API_KEY = "appKey";
-	private ApptentiveActivityLifecycleCallbacks callbacks;
+	private static final String APPTENTIVE_APP_KEY = "apptentiveAppKey";
+	private static final String Apptentive_APP_SIGNATURE = "apptentiveAppSignature";
 
 	@Override
 	public String getName() {
@@ -33,15 +31,15 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 
 	@Override
 	protected List<ReportingMessage> onKitCreate(Map<String, String> settings, Context context) {
-		String apiKey = settings.get(API_KEY);
-		if (KitUtils.isEmpty(apiKey)) {
-			throw new IllegalArgumentException("Apptentive app key is required.");
+		String apptentiveAppKey = settings.get(APPTENTIVE_APP_KEY);
+		String apptentiveAppSignature = settings.get(Apptentive_APP_SIGNATURE);
+		if (KitUtils.isEmpty(apptentiveAppKey)) {
+			throw new IllegalArgumentException("Apptentive App Key is required. If you are migrating from a previous version, you may need to enter the new Apptentive App Key and Signature on the mParticle website.");
 		}
-		if (callbacks == null) {
-			callbacks = new ApptentiveActivityLifecycleCallbacks();
+		if (KitUtils.isEmpty(apptentiveAppSignature)) {
+			throw new IllegalArgumentException("Apptentive App Signature is required. If you are migrating from a previous version, you may need to enter the new Apptentive App Key and Signature on the mParticle website.");
 		}
-		((Application)context.getApplicationContext()).registerActivityLifecycleCallbacks(callbacks);
-		ApptentiveInternal.createInstance(context.getApplicationContext(), apiKey);
+		Apptentive.register((Application)context.getApplicationContext(), apptentiveAppKey, apptentiveAppSignature);
 		return null;
 	}
 
