@@ -17,5 +17,5 @@ android {
 }
 
 dependencies {
-    compile 'com.apptentive:apptentive-android:4.0.2'
+    api 'com.apptentive:apptentive-android:4.0.2'
 }
