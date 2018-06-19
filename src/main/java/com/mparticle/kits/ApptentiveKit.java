@@ -11,6 +11,8 @@ import com.mparticle.MParticle;
 import com.mparticle.commerce.CommerceEvent;
 import com.mparticle.commerce.Product;
 import com.mparticle.commerce.TransactionAttributes;
+import com.mparticle.kits_core.KitIntegration;
+import com.mparticle.kits_core.ReportingMessage;
 
 import org.json.JSONException;
 
@@ -21,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ApptentiveKit extends KitIntegration implements KitIntegration.EventListener, KitIntegration.CommerceListener, KitIntegration.AttributeListener {
+public class ApptentiveKit extends AbstractKitIntegration implements KitIntegration.EventListener, KitIntegration.CommerceListener, KitIntegration.AttributeListener {
 	private static final String APPTENTIVE_APP_KEY = "apptentiveAppKey";
 	private static final String Apptentive_APP_SIGNATURE = "apptentiveAppSignature";
 
@@ -31,7 +33,7 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 	}
 
 	@Override
-	protected List<ReportingMessage> onKitCreate(Map<String, String> settings, Context context) {
+	public List<ReportingMessage> onKitCreate(Map<String, String> settings, Context context) {
 		String apptentiveAppKey = settings.get(APPTENTIVE_APP_KEY);
 		String apptentiveAppSignature = settings.get(Apptentive_APP_SIGNATURE);
 		if (KitUtils.isEmpty(apptentiveAppKey)) {
@@ -156,7 +158,7 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 			Apptentive.engage(getContext(), event.getEventName());
 		}
 		List<ReportingMessage> messageList = new LinkedList<ReportingMessage>();
-		messageList.add(ReportingMessage.fromEvent(this, event));
+		messageList.add(ReportingMessageImpl.fromEvent(this, event));
 		return messageList;
 	}
 
@@ -233,7 +235,7 @@ public class ApptentiveKit extends KitIntegration implements KitIntegration.Even
 							customData == null ? null : Collections.<String, Object>unmodifiableMap(customData),
 							apptentiveCommerceData);
 					List<ReportingMessage> messages = new LinkedList<ReportingMessage>();
-					messages.add(ReportingMessage.fromEvent(this, event));
+					messages.add(ReportingMessageImpl.fromEvent(this, event));
 					return messages;
 				}
 			}catch (JSONException jse) {
